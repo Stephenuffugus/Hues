@@ -99,9 +99,15 @@ a full-spectrum hue ring + center swatch on `#0a0a0c`. The generator script is k
 `/tmp/genicon.js` during dev; re-run with `node` if the icon art changes, or rasterize
 `icon.svg` with any tool that supports `<foreignObject>` conic-gradient masks.
 
+## Sunbeam economy (Sky Wolf Studios) — WIRED
+Additive cross-game currency. SDK `https://lucidwinds.com/sunbeam-sdk.js?v=2` loaded in
+`<head>`, `Sunbeam.init({gameId:"hues"})` once. Earns (all guarded with
+`window.Sunbeam && …` + `.catch()` so offline never throws):
+- `lockGuess()` → `Sunbeam.earn(4,"hues:win")` — once per round, every mode.
+- `dailyResult()` firstToday → `Sunbeam.earn(4,"hues:daily")` — first daily of the day.
+See `GAME_CARD.md`. Don't fork the SDK; don't add sign-in UI; don't call `mintPlant`.
+
 ## Known follow-ups / not yet done
-- **Sunbeam economy (Sky Wolf Studios):** additive cross-game currency SDK to be wired
-  at existing reward moments — pending integration rundown from the studio. Additive only.
 - **Global daily leaderboard + cross-device sync + tamper-resistant coins** — needs a
   backend (Firebase). Daily is already same-puzzle-for-everyone via the date seed.
 - **Self-host the 3 Google Fonts** for true offline fidelity (currently CDN + system fallback).

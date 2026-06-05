@@ -15,6 +15,9 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Hanken+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;800&display=swap" rel="stylesheet">
+<!-- Sky Wolf Studios — shared "sunbeam" currency SDK (additive; guarded so it never throws if blocked/offline) -->
+<script src="https://lucidwinds.com/sunbeam-sdk.js?v=2"></script>
+<script>window.Sunbeam&&Sunbeam.init({gameId:"hues"}).catch(function(){});</script>
 <style>
   :root{--bg:#0a0a0c;--ink:#f3f1ec;--ink-dim:#8d8a83;--ink-faint:#54524d;--line:#1e1e22;--line2:#2a2a30;
     --good:#7ee0a8;--warn:#e9d27a;--bad:#e87a7a;--coin:#e9c46a;
@@ -542,6 +545,7 @@ function lockGuess(timeout){if(G.locked)return;G.locked=true;cancelAnimationFram
   const earn=Math.floor(total/CONFIG.coinsPerPoint);G.coinsRun+=earn;G.score+=total;G.level++;G.tiers.push(tierFor(dE));
   G.history.push({t:{...G.cur.target},y:{...G.guess},dE,pts:total});
   missionEvent("rounds",1);if(dE<=CONFIG.perfectDE)missionEvent("perfects",1);
+  window.Sunbeam&&Sunbeam.earn(4,"hues:win").catch(function(){}); /* sunbeam: round complete */
   if(dE<=fine)yoursFrame.animate([{boxShadow:"0 0 0 0 rgba(126,224,168,0)"},{boxShadow:"0 0 0 5px rgba(126,224,168,.65)"},{boxShadow:"0 0 0 0 rgba(126,224,168,0)"}],{duration:750,easing:"ease-out"});
   if(dE<=CONFIG.perfectDE){beep(784,0.08,0.06);beep(1046,0.13,0.06);}else if(passed){beep(620,0.09,0.05);}else{beep(190,0.2,0.08);buzz(130);}
   const cl=closeness(dE);verdict.textContent=cl.pct+"% match · "+cl.label;verdict.style.color=cl.col;verdict.classList.add("show");
@@ -607,7 +611,8 @@ function dailyResult(){const today=todayStr(),firstToday=Store.g(K.dDone)!==toda
   if(firstToday){const last=Store.g(K.dLast),y=new Date();y.setDate(y.getDate()-1);
     streak=last===ymdStr(y)?streak+1:1;Store.s(K.dStreak,streak);Store.s(K.dLast,today);Store.s(K.dDone,today);Store.s(K.dDoneScore,G.score);
     const best=parseInt(Store.g(K.dBest)||"0",10);if(G.score>best)Store.s(K.dBest,G.score);
-    bonus=CONFIG.dailyBonus.base+streak*CONFIG.dailyBonus.perStreak;addCoins(bonus);missionEvent("dailyDone",1);}
+    bonus=CONFIG.dailyBonus.base+streak*CONFIG.dailyBonus.perStreak;addCoins(bonus);missionEvent("dailyDone",1);
+    window.Sunbeam&&Sunbeam.earn(4,"hues:daily").catch(function(){}); /* sunbeam: first daily of the day */}
   payout();
   const sq=G.tiers.map(t=>SQ[t]).join("");
   $("resKicker").textContent="DAILY #"+dailyNumber();$("resTitle").className="italic";$("resTitle").textContent=firstToday?"Locked in":"Practice";
